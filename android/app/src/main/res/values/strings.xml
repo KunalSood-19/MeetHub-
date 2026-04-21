@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">MeetHub+</string>
+    <string name="title_activity_main">MeetHub+</string>
+    <string name="package_name">com.kunal.MeetHub</string>
+    <string name="custom_url_scheme">com.kunal.MeetHub</string>
+</resources>
