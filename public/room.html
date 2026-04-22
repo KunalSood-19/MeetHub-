@@ -812,7 +812,183 @@ button:active::after{
   right: 10px !important;
   bottom: 140px !important;
 }
+/* ==========================================
+MOBILE CHAT OPEN FIX
+Paste at VERY END of CSS
+========================================== */
 
+/* remove old rule that hides sidebar */
+@media (max-width:680px){
+.sidebar{
+display:flex !important;
+}
+}
+
+/* mobile popup working */
+@media (max-width:768px){
+
+/* default closed */
+.sidebar{
+position:fixed !important;
+left:8px !important;
+right:8px !important;
+bottom:78px !important;
+top:auto !important;
+
+height:52vh !important;
+width:auto !important;
+
+display:flex !important;
+flex-direction:column;
+
+border-radius:18px !important;
+overflow:hidden;
+
+z-index:99999;
+
+transform:translateY(115%);
+opacity:1 !important;
+
+transition:transform .30s ease;
+}
+
+/* when open from JS */
+.sidebar:not(.closed){
+transform:translateY(0);
+}
+
+/* when closed */
+.sidebar.closed{
+transform:translateY(115%);
+width:auto !important;
+opacity:1 !important;
+overflow:hidden;
+}
+
+/* tabs always visible */
+.stabs{
+flex-shrink:0;
+display:flex;
+}
+
+/* panel area */
+.spanel{
+flex:1;
+min-height:0;
+}
+
+/* chat scroll */
+.chatbox,
+.plist,
+.agenda-list{
+flex:1;
+overflow-y:auto;
+}
+
+/* inputs stay bottom */
+.file-row,
+.chat-in,
+.notepad-bar,
+.agenda-add{
+flex-shrink:0;
+}
+
+/* open button feel */
+.cb,.more-btn{
+touch-action:manipulation;
+}
+
+}
+
+/* extra small phones */
+@media (max-width:480px){
+
+.sidebar{
+left:6px !important;
+right:6px !important;
+bottom:74px !important;
+height:50vh !important;
+}
+
+}
+
+/* ==========================================
+2 PEOPLE MOBILE VIDEO FIX
+When only 2 users = one UP one DOWN
+Paste at VERY END of CSS
+========================================== */
+
+@media (max-width:768px){
+
+/* exactly 2 participants */
+#videoGrid.c2{
+display:grid !important;
+grid-template-columns:1fr !important;
+grid-template-rows:1fr 1fr !important;
+
+height:100% !important;
+gap:8px !important;
+padding:0 !important;
+}
+
+/* each tile full half screen */
+#videoGrid.c2 .tile{
+width:100% !important;
+height:100% !important;
+min-height:0 !important;
+border-radius:18px !important;
+overflow:hidden;
+}
+
+/* video fit */
+#videoGrid.c2 .tile video{
+width:100% !important;
+height:100% !important;
+object-fit:cover !important;
+}
+
+/* name badge */
+#videoGrid.c2 .tile .nm{
+bottom:10px;
+left:10px;
+}
+
+/* if local + remote */
+#videoGrid.c2 #localTile{
+order:1;
+}
+
+#videoGrid.c2 .tile:not(#localTile){
+order:2;
+}
+
+/* pinned video ignore */
+#videoGrid.c2 .tile.pinned{
+top:56px !important;
+left:6px !important;
+right:6px !important;
+bottom:88px !important;
+}
+
+/* overall area */
+.vid-area{
+padding:6px !important;
+}
+
+}
+
+/* very small mobile */
+@media (max-width:480px){
+
+#videoGrid.c2{
+gap:6px !important;
+}
+
+#videoGrid.c2 .tile{
+border-radius:14px !important;
+}
+
+}
 }
 
 </style>
@@ -1047,35 +1223,55 @@ button:active::after{
     </div>
   </button>
 </div>
-
 <!-- WHITEBOARD MODAL -->
 <div class="wb-modal" id="wbModal">
+
   <div class="wb-hdr">
-   <h3><i class="fa-solid fa-pen-ruler"></i> Whiteboard</h3>
 
-<button class="wb-tool on" onclick="setWbTool('pen')">
-  <i class="fa-solid fa-pen"></i> Pen
-</button>
+    <h3><i class="fa-solid fa-pen-ruler"></i> Whiteboard</h3>
 
-<button class="wb-tool" onclick="setWbTool('eraser')">
-  <i class="fa-solid fa-eraser"></i> Eraser
-</button>
+    <!-- Pen -->
+    <button class="wb-tool on" id="wbPenBtn" onclick="setWbTool('pen')">
+      <i class="fa-solid fa-pen"></i> Pen
+    </button>
 
-<button class="wb-tool" onclick="clearWB()">
-  <i class="fa-solid fa-trash"></i> Clear
-</button>
+    <!-- Eraser -->
+    <button class="wb-tool" id="wbEraserBtn" onclick="setWbTool('eraser')">
+      <i class="fa-solid fa-eraser"></i> Eraser
+    </button>
 
-<button class="wb-tool" onclick="saveWB()">
-  <i class="fa-solid fa-download"></i> Save
-</button>
+    <!-- Color Picker -->
+    <input type="color" id="wbColor" class="wb-color" value="#000000">
 
-<button class="wb-tool" onclick="closeWB()">
-  <i class="fa-solid fa-xmark"></i> Close
-</button>
+    <!-- Brush Size -->
+    <select id="wbSize" class="wb-size">
+      <option value="2">2px</option>
+      <option value="4" selected>4px</option>
+      <option value="6">6px</option>
+      <option value="10">10px</option>
+      <option value="14">14px</option>
+    </select>
+
+    <!-- Clear -->
+    <button class="wb-tool" onclick="clearWB()">
+      <i class="fa-solid fa-trash"></i> Clear
+    </button>
+
+    <!-- Save -->
+    <button class="wb-tool" onclick="saveWB()">
+      <i class="fa-solid fa-download"></i> Save
+    </button>
+
+    <!-- Close -->
+    <button class="wb-tool" onclick="closeWB()">
+      <i class="fa-solid fa-xmark"></i> Close
+    </button>
+
   </div>
-  <canvas id="wbCanvas"></canvas>
-</div>
 
+  <canvas id="wbCanvas"></canvas>
+
+</div>
 <!-- AI MODAL -->
 <div class="modal-overlay" id="aiModal">
   <div class="ai-box">
@@ -1197,6 +1393,49 @@ _capBtn.addEventListener('click', () => {
     _capBadge.classList.toggle('on', isOn);
   }, 100);
 });
+
+/* =========================
+MOBILE CHAT FIX FINAL
+========================= */
+
+const sidebar = document.getElementById("sidebar");
+
+/* start closed on mobile */
+if(window.innerWidth <= 768){
+  sidebar.classList.add("closed");
+}
+
+/* force toggle */
+function toggleSidebar(){
+
+  if(sidebar.classList.contains("closed")){
+      sidebar.classList.remove("closed");
+      sidebar.style.display = "flex";
+      sidebar.style.transform = "translateY(0)";
+  }else{
+      sidebar.classList.add("closed");
+      sidebar.style.display = "flex";
+      sidebar.style.transform = "translateY(115%)";
+  }
+
+}
+
+/* desktop always open */
+function checkSidebar(){
+ if(window.innerWidth > 768){
+    sidebar.classList.remove("closed");
+    sidebar.style.display="flex";
+    sidebar.style.transform="translateY(0)";
+ }else{
+    if(!sidebar.classList.contains("closed")){
+       sidebar.style.transform="translateY(0)";
+    }
+ }
+}
+
+window.addEventListener("resize", checkSidebar);
+checkSidebar();
+
 </script>
 </body>
 </html>
